@@ -1,2 +1,3 @@
-# prj1-lawnmower
- 
+Group Members:
+Sammy Guzman
+Hyojun Lee
