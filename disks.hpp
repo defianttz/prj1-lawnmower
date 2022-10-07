@@ -60,6 +60,7 @@ public:
   }
 
   disk_color get(size_t index) const {
+    //std::cout << "index=" << index << std::endl;
     assert(is_index(index));
     return _colors[index];
   }
@@ -113,6 +114,15 @@ public:
   // the left (low indices) and all dark disks on the right (high indices).
   bool is_sorted() const {
 
+    for(size_t i = 0; i < total_count(); i++){
+      if(i < total_count() / 2){
+        if (_colors[i] == DISK_DARK){
+          return false;
+        }
+      }
+    }
+
+
       return true;
   }
 };
@@ -149,7 +159,7 @@ sorted_disks sort_alternate(const disk_state& before) {
 	int numOfSwap = 0; //record # of step swap
   disk_state state = before;
 
-  for(size_t i = 0; i < state.total_count(); i++ ){
+  for(size_t i = 0; i < state.total_count()/2; i++ ){
     //
     if (i % 2 == 0){
 
@@ -185,20 +195,21 @@ sorted_disks sort_lawnmower(const disk_state& before) {
   	int numOfSwap = 0; //record # of step swap
     disk_state state = before;
 
-    for(int i = 0; state.total_count()/2; i++ ){
-
-      // Swap disks if a DARK disk is to the left
-      if (state.get(i) > state.get(i+1)){
-        state.swap(i);
-        numOfSwap++;
+    for(size_t i = 0; i < state.total_count() / 2; i++){
+        for(size_t j = 0; j+1 < state.total_count(); j++){
+          if (state.get(j) > state.get(j+1)){
+            state.swap(j);
+            numOfSwap++;
+          }
+        }
+      //std::cout << "second loop" << std::endl;
+    for(size_t j = state.total_count()-1; j > 0; j--){
+        if(state.get(j) < state.get(j-1) ){
+            state.swap(j-1);
+            numOfSwap++;
+          }
+        }
       }
-    }
-    for(int j = state.total_count(); j > 0; j--){
-      if(state.get(j) < state.get(j-1) ){
-        state.swap(j);
-        numOfSwap++;
-      }
-    }
 
 
   return sorted_disks(disk_state(state), numOfSwap);
