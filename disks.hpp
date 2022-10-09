@@ -113,16 +113,14 @@ public:
   // Return true when this disk_state is fully sorted, with all light disks on
   // the left (low indices) and all dark disks on the right (high indices).
   bool is_sorted() const {
-
     for(size_t i = 0; i < total_count(); i++){
-      if(i < total_count() / 2){
-        if (_colors[i] == DISK_DARK){
-          return false;
+        // Check whether the first half is sorted
+        if(i < total_count() / 2){
+          if (_colors[i] == DISK_DARK){
+            return false;
+          }
         }
-      }
     }
-
-
       return true;
   }
 };
@@ -159,36 +157,34 @@ sorted_disks sort_alternate(const disk_state& before) {
 	int numOfSwap = 0; //record # of step swap
   disk_state state = before;
 
-  for(size_t i = 0; i < state.total_count()/2; i++ ){
-    //
+  for(size_t i = 0; i < state.total_count(); i++ ){
+    // Check if index is even
     if (i % 2 == 0){
-
+      // Loop through list with an even index
       for(size_t even_idx = 0; even_idx < state.total_count()-1; even_idx = even_idx+2){
         // Check Whether the left is greater than the right disk
-        if (state.get(even_idx) > state.get(even_idx+1))
-        {
+        if (state.get(even_idx) > state.get(even_idx+1)){
+          // Swap
           state.swap(even_idx);
           numOfSwap++;
         }
       }
     }
-    else
+    else // Odd
     {
+      // Loop through list with an odd index
       for (size_t odd_idx = 1; odd_idx < state.total_count() -2; odd_idx=odd_idx + 2 ){
         // Check Whether the left is greater than the right disk
-        if (state.get(odd_idx) > state.get(odd_idx+1))
-        {
+        if (state.get(odd_idx) > state.get(odd_idx+1)){
+          //Swap
           state.swap(odd_idx);
           numOfSwap++;
         }
       }
-
     }
-
   }
   return sorted_disks(disk_state(state), numOfSwap);
 }
-
 
 // Algorithm that sorts disks using the lawnmower algorithm.
 sorted_disks sort_lawnmower(const disk_state& before) {
@@ -196,21 +192,23 @@ sorted_disks sort_lawnmower(const disk_state& before) {
     disk_state state = before;
 
     for(size_t i = 0; i < state.total_count() / 2; i++){
-        for(size_t j = 0; j+1 < state.total_count(); j++){
+        // Forward loop
+        for(size_t j = 0; j < state.total_count()-1; j++){
+          // Check Whether the left is greater than the right disk
           if (state.get(j) > state.get(j+1)){
             state.swap(j);
             numOfSwap++;
           }
         }
-      //std::cout << "second loop" << std::endl;
-    for(size_t j = state.total_count()-1; j > 0; j--){
-        if(state.get(j) < state.get(j-1) ){
-            state.swap(j-1);
-            numOfSwap++;
-          }
+        // Reverse Loop
+        for(size_t j = state.total_count()-1; j > 0; j--){
+            // Check Whether the left is greater than the right disk
+            if(state.get(j) < state.get(j-1) ){
+                state.swap(j-1);
+                numOfSwap++;
+            }
         }
       }
-
 
   return sorted_disks(disk_state(state), numOfSwap);
 }
